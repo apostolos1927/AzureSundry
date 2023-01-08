@@ -1,0 +1,23 @@
+variables:
+- group: dev
+
+name: $(variable_group_param) 
+
+stages :        
+  - stage: arm_template_deploy
+    jobs:
+      - job: arm_template_deploy
+        steps:
+              - checkout: self
+ 
+              - task: AzureResourceManagerTemplateDeployment@3
+                inputs:
+                  deploymentScope: 'Resource Group'
+                  azureResourceManagerConnection: 'service_connection'
+                  subscriptionId: '123456'
+                  action: 'Create Or Update Resource Group'
+                  resourceGroupName: 'test'
+                  location: 'westeurope'
+                  templateLocation: 'Linked artifact'
+                  csmFile: '$(System.DefaultWorkingDirectory)/vnet.json'
+                  csmParametersFile: '$(System.DefaultWorkingDirectory)/vnet.parameters.json'
